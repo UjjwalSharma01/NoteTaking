@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useIsMobile } from '@/hooks/useMobile';
 import { motion } from 'framer-motion';
 import { 
   Bars3Icon, 
@@ -19,6 +20,7 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import MobileLayout from './MobileLayout';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
@@ -33,6 +35,7 @@ export default function Layout({ children, showSidebar = true }) {
   const { user, logout } = useAuth();
   const { theme, toggleTheme, isDark } = useTheme();
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   const handleLogout = async () => {
     const result = await logout();
@@ -40,6 +43,11 @@ export default function Layout({ children, showSidebar = true }) {
       router.push('/');
     }
   };
+
+  // Use mobile layout for mobile devices
+  if (isMobile) {
+    return <MobileLayout>{children}</MobileLayout>;
+  }
 
   return (
     <div className="h-screen flex overflow-hidden bg-gray-100 dark:bg-gray-900">
